@@ -1,0 +1,9 @@
+{
+    "main_menu": "<b>💎 PR MIT</b> - <em>мощный и уникальный инструмент для рекламы ваших проектов</em>\n\n<b>Главное меню</b>",
+    "plugins": "🧩 Плагины",
+    "ref_system": "👥 Реф система",
+    "about": "ℹ️ О нас",
+    "admin_panel": "🛠 АДМИНКА",
+    "back": "🔙 Назад",
+    "profile": "👀 <b>Профиль:</b>\n\n⭐️ <b>TG Premium:</b> {premium_status}\n📅 <b>Дата регистрации</b> <em>{reg_time}</em>\n🪪 <b>ID</b> - <code>{user_id}</code>\n\n💰 Баланс $MICO - {balance:.2f} MitCoin\n💳 Баланс руб - {rub_balance:.2f} ₽\n⭐️ Баланс Stars - {stars}\n\n🚀 Выполнено заданий за сегодня: {daily_tasks}"
+}
