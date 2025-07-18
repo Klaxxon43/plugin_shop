@@ -57,12 +57,10 @@ async def show_plugins_page(callback: types.CallbackQuery, page: int = 1):
 
     builder.row(InlineKeyboardButton(text=_("🔙 Назад"), callback_data="back_menu"))
 
-    await callback.message.delete()
-    await callback.message.answer(
+    await callback.message.edit_text(
         _("🧩 <b>Доступные плагины:</b>\n\nВыберите плагин для покупки:"),
         reply_markup=builder.as_markup()
     )
-
 
 
 @router.callback_query(F.data.startswith("plugin_"))
