@@ -57,23 +57,24 @@ async def show_plugins_page(callback: types.CallbackQuery, page: int = 1):
 
     builder.row(InlineKeyboardButton(text=_("🔙 Назад"), callback_data="back_menu"))
 
-    await callback.message.edit_text(
+    await callback.message.delete()
+    await callback.message.answer(
         _("🧩 <b>Доступные плагины:</b>\n\nВыберите плагин для покупки:"),
         reply_markup=builder.as_markup()
     )
+
 
 
 @router.callback_query(F.data.startswith("plugin_"))
 async def plugin_detail_handler(callback: types.CallbackQuery, bot: Bot):
     item_id = int(callback.data.split("_")[1])
     item = await db.items.get_item(item_id)
-    
+
     if not item:
         await callback.answer(_("Плагин не найден!"), show_alert=True)
         return
-    
-    text = _('''
-🧩 <b>{name}</b>
+
+    text = _('''🧩 <b>{name}</b>
 
 💵 <b>Цена:</b> {price}₽
 📝 <b>Описание:</b>
@@ -85,32 +86,30 @@ async def plugin_detail_handler(callback: types.CallbackQuery, bot: Bot):
         price=item['price'],
         description=item['description']
     )
-    
+
     kb = InlineKeyboardBuilder()
     kb.button(text=_("🛒 Купить"), callback_data=f"buy_{item_id}")
     kb.button(text=_("🔙 Назад"), callback_data="plugins")
     kb.adjust(1)
-    
-    # Если есть фото товара
+
     if item.get('photo_path'):
         try:
-            # Отправляем фото с описанием
             with open(item['photo_path'], 'rb') as photo:
-                await bot.send_photo(
-                    chat_id=callback.message.chat.id,
-                    photo=types.BufferedInputFile(photo.read(), filename='item_photo.jpg'),
+                media = types.InputMediaPhoto(
+                    media=types.BufferedInputFile(photo.read(), filename="item_photo.jpg"),
                     caption=text,
+                    parse_mode="HTML"
+                )
+                await callback.message.edit_media(
+                    media=media,
                     reply_markup=kb.as_markup()
                 )
-            # Удаляем предыдущее сообщение
-            await callback.message.delete()
         except Exception as e:
             print(f"Ошибка при отправке фото: {e}")
-            # Если не удалось отправить фото, отправляем просто текст
             await callback.message.edit_text(text, reply_markup=kb.as_markup())
     else:
-        # Если фото нет, отправляем просто текст
         await callback.message.edit_text(text, reply_markup=kb.as_markup())
+
 
 def back_kb():
     kb = InlineKeyboardBuilder()

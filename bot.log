@@ -14433,3 +14433,5 @@ aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: there
 2025-07-18 21:43:43,053 - aiogram.event - INFO - Update id=765722783 is handled. Duration 256 ms by bot id=7674982452
 2025-07-18 21:43:46,411 - aiogram.dispatcher - INFO - Polling stopped
 2025-07-18 21:43:46,625 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 21:49:41,131 - aiogram.dispatcher - INFO - Start polling
+2025-07-18 21:49:41,504 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
