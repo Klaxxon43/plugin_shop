@@ -4,8 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from utils.imports import _, State, StatesGroup, Message
-from database.create import DataBase
-
+from utils.db_init import db
 from .admin import admin 
 
 class UserProfileStates(StatesGroup):
@@ -26,7 +25,6 @@ async def admin_user_profile_handler(callback: types.CallbackQuery, state: FSMCo
 async def process_user_id(message: Message, state: FSMContext):
     try:
         user_id = int(message.text)
-        db = DataBase()
         user = await db.users.get_user(user_id)
         
         if not user:
@@ -35,11 +33,21 @@ async def process_user_id(message: Message, state: FSMContext):
         
         await state.update_data(user_id=user_id)
         
-        history = await db.history.get_user_history(user_id, limit=5)
-        history_text = "\n".join([
-            f"{record['date']}: {record['amount']} - {record['comment']}"
-            for record in history
-        ]) if history else _("Нет операций")
+        # Получаем историю и формируем текст
+        history_records = await db.history.get_user_history(user_id, limit=5)
+        history_text = _("Нет операций")
+        
+        if history_records:
+            # Предполагаем, что записи возвращаются в формате (id, user_id, amount, comment, date)
+            history_lines = []
+            for record in history_records:
+                # Доступ к полям по индексу (адаптируйте под вашу структуру таблицы)
+                amount = record[2]  # Предполагаем, что amount на 3 позиции
+                comment = record[3] # comment на 4 позиции
+                date = record[4]    # date на 5 позиции
+                history_lines.append(f"{date}: {amount}₽ - {comment}")
+            
+            history_text = "\n".join(history_lines)
         
         text = _('''
 👤 <b>Профиль пользователя</b>
@@ -54,7 +62,7 @@ async def process_user_id(message: Message, state: FSMContext):
 {history}
 ''').format(
             user_id=user['user_id'],
-            username=user['username'],
+            username=user['username'] or "нет",
             balance=user['balance'],
             reg_time=user['reg_time'],
             banned_status=_("Забанен") if user['is_banned'] else _("Активен"),
@@ -74,8 +82,9 @@ async def process_user_id(message: Message, state: FSMContext):
         
         await message.answer(text, reply_markup=kb)
         
-    except ValueError:
+    except ValueError as e:
         await message.answer(_("❌ Неверный формат ID! Введите число:"))
+        print(e)
 
 @admin.callback_query(F.data == "add_balance", UserProfileStates.waiting_for_user_id)
 async def add_balance_handler(callback: types.CallbackQuery, state: FSMContext):
@@ -93,8 +102,6 @@ async def process_amount(message: Message, state: FSMContext):
         amount = float(message.text)
         data = await state.get_data()
         user_id = data['user_id']
-        
-        db = DataBase()
         await db.users.update_balance(
             user_id=user_id,
             amount=amount,
@@ -117,8 +124,6 @@ async def process_amount(message: Message, state: FSMContext):
 async def toggle_ban_handler(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     user_id = data['user_id']
-    
-    db = DataBase()
     user = await db.users.get_user(user_id)
     
     if user['is_banned']:

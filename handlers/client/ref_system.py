@@ -8,7 +8,7 @@ from database.create import DataBase
 from utils.config_loader import config
 from utils.db_init import *
 
-from .menu import router 
+from .menu import router
 
 @router.callback_query(F.data == "ref_system")
 async def ref_system_handler(callback: types.CallbackQuery):
@@ -16,6 +16,7 @@ async def ref_system_handler(callback: types.CallbackQuery):
     
     ref_link = f"https://t.me/{(await callback.bot.get_me()).username}?start={user['user_id']}"
     ref_count = await db.users.get_ref_count(user['user_id'])
+    ref_income = await db.users.get_ref_income(user['user_id'])
     
     text = _('''
 👥 <b>Реферальная система</b>
@@ -33,7 +34,7 @@ async def ref_system_handler(callback: types.CallbackQuery):
 ''').format(
         ref_link=ref_link,
         ref_count=ref_count,
-        ref_income=user.get('ref_income', 0),
+        ref_income=ref_income,
         ref_percent=config.ref_percent
     )
     

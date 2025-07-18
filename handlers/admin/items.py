@@ -167,3 +167,55 @@ async def process_item_photo(message: Message, state: FSMContext, bot: Bot):
         _("Что дальше?"),
         reply_markup=kb.as_markup()
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async def process_purchase_with_referral(user_id: int, amount: float, item_id: int, bot: Bot):
+    """
+    Обработка покупки с учетом реферальной системы
+    :param user_id: ID покупателя
+    :param amount: Сумма покупки
+    :param item_id: ID товара
+    """
+    # 1. Получаем реферера
+    referrer_id = await db.users.get_referrer(user_id)
+    
+    if referrer_id:
+        # 2. Рассчитываем бонус (15% от суммы)
+        ref_bonus = amount * (config.ref_percent / 100)
+        
+        # 3. Начисляем бонус рефереру
+        await db.users.add_ref_income(referrer_id, ref_bonus)
+        
+        # 4. Записываем в историю
+        await db.history.add_record(
+            referrer_id, 
+            ref_bonus, 
+            f"Реферальный бонус от пользователя {user_id} за покупку товара {item_id}"
+        )
+        
+        # 5. Можно отправить уведомление рефереру
+        try:
+            await bot.send_message(
+                referrer_id,
+                _("🎉 Вы получили реферальный бонус {bonus}₽ за покупку вашего реферала!").format(bonus=ref_bonus)
+            )
+        except:
+            pass  # Если не удалось отправить сообщение
+    
+    # 6. Регистрируем покупку
+    await db.items.increment_purchases(item_id)
+    await db.history.add_record(user_id, -amount, f"Покупка товара {item_id}")

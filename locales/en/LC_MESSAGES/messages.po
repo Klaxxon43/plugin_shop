@@ -1,0 +1,312 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-07-17 18:09+0300\n"
+"PO-Revision-Date: 2025-07-17 17:52+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: handlers/client/menu.py:30 main.py:98
+msgid "<b>Главное меню</b>"
+msgstr "<b>Main Menu</b>"
+
+#: handlers/client/menu.py:21 main.py:101
+msgid "🧩 Плагины"
+msgstr "🧩 Plugins"
+
+#: handlers/client/menu.py:22 main.py:102
+msgid "👥 Реф система"
+msgstr "👥 Referral system"
+
+#: handlers/client/menu.py:23 main.py:103
+msgid "ℹ️ О нас"
+msgstr "ℹ️ About us"
+
+#: handlers/client/menu.py:26 main.py:106
+msgid "🛠 АДМИНКА"
+msgstr "🛠 ADMIN PANEL"
+
+#: database/users.py:44
+msgid "🎉 Пользователь @{username} перешёл по вашей ссылке и стал вашим рефералом!"
+msgstr ""
+
+#: handlers/admin/admin.py:17
+msgid "У вас нет доступа!"
+msgstr ""
+
+#: handlers/admin/admin.py:21
+msgid "🛍 Управление товарами"
+msgstr ""
+
+#: handlers/admin/admin.py:22
+msgid "👤 Профиль пользователя"
+msgstr ""
+
+#: handlers/admin/admin.py:23
+msgid "🎁 Реф награда"
+msgstr ""
+
+#: handlers/admin/admin.py:24
+msgid "📢 Управление ОП"
+msgstr ""
+
+#: handlers/admin/admin.py:25
+msgid "📢 Рассылка"
+msgstr ""
+
+#: handlers/admin/admin.py:26
+msgid "📊 Статистика"
+msgstr ""
+
+#: handlers/admin/admin.py:27 handlers/admin/items.py:32
+#: handlers/admin/user_profile.py:21 handlers/admin/user_profile.py:72
+#: handlers/admin/user_profile.py:86 handlers/client/menu.py:67
+#: handlers/client/plugins.py:42 handlers/client/plugins.py:74
+#: handlers/client/plugins.py:100 handlers/client/ref_system.py:41
+msgid "🔙 Назад"
+msgstr ""
+
+#: handlers/admin/admin.py:30
+msgid "<b>🛠 Админ панель</b>"
+msgstr ""
+
+#: handlers/admin/items.py:29
+msgid "➕ Добавить товар"
+msgstr ""
+
+#: handlers/admin/items.py:30
+msgid "✏️ Редактировать товар"
+msgstr ""
+
+#: handlers/admin/items.py:31
+msgid "🗑️ Удалить товар"
+msgstr ""
+
+#: handlers/admin/items.py:36
+msgid "<b>🛍 Управление товарами</b>"
+msgstr ""
+
+#: handlers/admin/items.py:42 handlers/admin/items.py:53
+#: handlers/admin/items.py:64 handlers/admin/items.py:77
+#: handlers/admin/items.py:91 handlers/admin/items.py:113
+msgid "🔙 Отмена"
+msgstr ""
+
+#: handlers/admin/items.py:44
+msgid "✏️ Введите название товара:"
+msgstr ""
+
+#: handlers/admin/items.py:55
+msgid "📝 Введите описание товара:"
+msgstr ""
+
+#: handlers/admin/items.py:66
+msgid "💰 Введите цену товара (только число):"
+msgstr ""
+
+#: handlers/admin/items.py:79
+msgid "📄 Введите инструкцию для товара (или отправьте '-' чтобы пропустить):"
+msgstr ""
+
+#: handlers/admin/items.py:83
+msgid "❌ Неверный формат цены! Введите число:"
+msgstr ""
+
+#: handlers/admin/items.py:93
+msgid "📁 Отправьте файл плагина (архив или исполняемый файл):"
+msgstr ""
+
+#: handlers/admin/items.py:114
+msgid "⏭ Пропустить"
+msgstr ""
+
+#: handlers/admin/items.py:117
+msgid "📸 Отправьте фото для товара (или нажмите 'Пропустить'):"
+msgstr ""
+
+#: handlers/admin/items.py:134
+msgid "✅ Товар успешно добавлен без фото!"
+msgstr ""
+
+#: handlers/admin/items.py:161
+msgid "✅ Товар успешно добавлен с фото!"
+msgstr ""
+
+#: handlers/admin/items.py:165
+msgid "🛍 К управлению товарами"
+msgstr ""
+
+#: handlers/admin/items.py:167
+msgid "Что дальше?"
+msgstr ""
+
+#: handlers/admin/user_profile.py:19
+msgid "👤 Введите ID пользователя:"
+msgstr ""
+
+#: handlers/admin/user_profile.py:33
+msgid "❌ Пользователь не найден!"
+msgstr ""
+
+#: handlers/admin/user_profile.py:42
+msgid "Нет операций"
+msgstr ""
+
+#: handlers/admin/user_profile.py:44
+msgid ""
+"\n"
+"👤 <b>Профиль пользователя</b>\n"
+"\n"
+"🆔 ID: <code>{user_id}</code>\n"
+"👤 Имя: @{username}\n"
+"💰 Баланс: {balance}₽\n"
+"📅 Дата регистрации: {reg_time}\n"
+"🚫 Статус: {banned_status}\n"
+"\n"
+"📊 <b>Последние операции:</b>\n"
+"{history}\n"
+msgstr ""
+
+#: handlers/admin/user_profile.py:60
+msgid "Забанен"
+msgstr ""
+
+#: handlers/admin/user_profile.py:60
+msgid "Активен"
+msgstr ""
+
+#: handlers/admin/user_profile.py:66
+msgid "➕ Пополнить баланс"
+msgstr ""
+
+#: handlers/admin/user_profile.py:68
+msgid "🚫 Забанить"
+msgstr ""
+
+#: handlers/admin/user_profile.py:68
+msgid "✅ Разбанить"
+msgstr ""
+
+#: handlers/admin/user_profile.py:78
+msgid "❌ Неверный формат ID! Введите число:"
+msgstr ""
+
+#: handlers/admin/user_profile.py:84
+msgid "💰 Введите сумму для пополнения:"
+msgstr ""
+
+#: handlers/admin/user_profile.py:101
+msgid "Пополнение администратором"
+msgstr ""
+
+#: handlers/admin/user_profile.py:105
+msgid "✅ Баланс успешно пополнен на {amount}₽"
+msgstr ""
+
+#: handlers/admin/user_profile.py:107
+msgid "👤 К профилю"
+msgstr ""
+
+#: handlers/admin/user_profile.py:114
+msgid "❌ Неверный формат суммы! Введите число:"
+msgstr ""
+
+#: handlers/admin/user_profile.py:126
+msgid "✅ Пользователь разбанен"
+msgstr ""
+
+#: handlers/admin/user_profile.py:129
+msgid "🚫 Пользователь забанен"
+msgstr ""
+
+#: handlers/client/menu.py:40
+msgid "Пользователь не найден!"
+msgstr ""
+
+#: handlers/client/menu.py:46
+msgid ""
+"\n"
+"👀 <b>Профиль:</b>\n"
+"                                     \n"
+"⭐️ <b>TG Premium:</b> {premium_status}\n"
+"📅 <b>Дата регистрации:</b> <em>{reg_time}</em>"
+"                                     \n"
+"🪪 <b>ID:</b> <code>{user_id}</code>\n"
+"\n"
+"💰 Баланс $MICO: {balance:.2f} MitCoin\n"
+"💳 Баланс руб: {rub_balance:.2f} ₽\n"
+"    "
+msgstr ""
+
+#: handlers/client/menu.py:56
+msgid "Есть"
+msgstr ""
+
+#: handlers/client/menu.py:56
+msgid "Нету"
+msgstr ""
+
+#: handlers/client/menu.py:89
+msgid "Выберите язык / Choose language:"
+msgstr ""
+
+#: handlers/client/plugins.py:19
+msgid "🧩 На данный момент нет доступных плагинов."
+msgstr ""
+
+#: handlers/client/plugins.py:45
+msgid ""
+"🧩 <b>Доступные плагины:</b>\n"
+"\n"
+"Выберите плагин для покупки:"
+msgstr ""
+
+#: handlers/client/plugins.py:55
+msgid "Плагин не найден!"
+msgstr ""
+
+#: handlers/client/plugins.py:58
+msgid ""
+"\n"
+"🧩 <b>{name}</b>\n"
+"\n"
+"💵 <b>Цена:</b> {price}₽\n"
+"📝 <b>Описание:</b>\n"
+"{description}\n"
+"\n"
+"🛒 <b>Купить этот плагин?</b>\n"
+msgstr ""
+
+#: handlers/client/plugins.py:73
+msgid "🛒 Купить"
+msgstr ""
+
+#: handlers/client/ref_system.py:20
+msgid ""
+"\n"
+"👥 <b>Реферальная система</b>\n"
+"\n"
+"🔗 <b>Ваша реферальная ссылка:</b>\n"
+"<code>{ref_link}</code>\n"
+"\n"
+"📊 <b>Статистика:</b>\n"
+"👥 Количество рефералов: {ref_count}\n"
+"💰 Ваш доход с рефералов: {ref_income}₽\n"
+"\n"
+"💸 <b>Как это работает?</b>\n"
+"Вы получаете {ref_percent}% от всех покупок ваших рефералов!\n"
+"Приглашайте друзей и зарабатывайте вместе с нами!\n"
+msgstr ""
+

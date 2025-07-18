@@ -1,9 +1,0 @@
-{
-    "main_menu": "<b>💎 PR MIT</b> - <em>powerful and unique tool for promoting your projects</em>\n\n<b>Main menu</b>",
-    "plugins": "🧩 Plugins",
-    "ref_system": "👥 Referral system",
-    "about": "ℹ️ About us",
-    "admin_panel": "🛠 ADMIN PANEL",
-    "back": "🔙 Back",
-    "profile": "👀 <b>Profile:</b>\n\n⭐️ <b>TG Premium:</b> {premium_status}\n📅 <b>Registration date</b> <em>{reg_time}</em>\n🪪 <b>ID</b> - <code>{user_id}</code>\n\n💰 $MICO balance - {balance:.2f} MitCoin\n💳 RUB balance - {rub_balance:.2f} ₽\n⭐️ Stars balance - {stars}\n\n🚀 Tasks completed today: {daily_tasks}"
-}

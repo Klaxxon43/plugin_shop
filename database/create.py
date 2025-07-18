@@ -149,8 +149,24 @@ class DataBase:
                 columns = [desc[0] for desc in cur.description]
                 user = dict(zip(columns, user_data))
 
-                print(user)
                 return user
+            
+        async def get_user_id_by_username(self, username: int):
+            async with self.db.con.cursor() as cur:
+                # Получаем данные пользователя (включая язык)
+                await cur.execute('''
+                    SELECT * FROM users WHERE username = ?
+                ''', (username,))
+                user_data = await cur.fetchone()
+
+                if not user_data:
+                    return None
+
+                # Преобразуем кортеж в словарь
+                columns = [desc[0] for desc in cur.description]
+                user = dict(zip(columns, user_data))
+
+                return user['user_id']
 
 
         async def update_balance(self, user_id: int, amount: float, comment: str):
@@ -204,6 +220,78 @@ class DataBase:
                     UPDATE users SET {set_clause} WHERE user_id = ?
                 ''', values)
                 await self.db.con.commit()
+                
+        async def get_ref_count(self, user_id: int) -> int:
+            """Получить количество рефералов пользователя"""
+            async with self.db.con.cursor() as cur:
+                await cur.execute('SELECT COUNT(*) FROM users WHERE referrer_id = ?', (user_id,))
+                return (await cur.fetchone())[0]
+        
+        async def get_ref_income(self, user_id: int) -> float:
+            """Получить суммарный доход от рефералов (из истории операций)"""
+            async with self.db.con.cursor() as cur:
+                await cur.execute('''
+                    SELECT COALESCE(SUM(amount), 0) 
+                    FROM history 
+                    WHERE user_id = ? AND comment LIKE 'Реферальный бонус%'
+                ''', (user_id,))
+                return (await cur.fetchone())[0]
+        
+        async def add_ref_income(self, user_id: int, amount: float):
+            """Добавить доход от реферала через историю операций"""
+            async with self.db.con.cursor() as cur:
+                # Добавляем запись в историю
+                await cur.execute('''
+                    INSERT INTO history (user_id, amount, comment, date)
+                    VALUES (?, ?, ?, datetime('now'))
+                ''', (user_id, amount, f"Реферальный бонус: +{amount}₽"))
+                
+                # Обновляем баланс пользователя
+                await cur.execute('''
+                    UPDATE users 
+                    SET balance = balance + ? 
+                    WHERE user_id = ?
+                ''', (amount, user_id))
+                await self.db.con.commit()
+        
+        async def get_referrer(self, user_id: int):
+            """Получить реферера пользователя"""
+            async with self.db.con.cursor() as cur:
+                await cur.execute('SELECT referrer_id FROM users WHERE user_id = ?', (user_id,))
+                result = await cur.fetchone()
+                return result[0] if result else None
+                
+        async def execute_query(self, query):
+            """Выполняет SQL-запрос и возвращает результат."""
+            try:
+                async with self.db.con.cursor() as cur:
+                    await cur.execute(query)
+                    result = await cur.fetchall()
+                    return result
+            except Exception as e:
+                return f"Ошибка при выполнении запроса: {e}"
+                
+        async def get_db_structure_sqlite(self):
+            """Получение структуры базы данных."""
+            try:
+                async with self.db.con.cursor() as cur:
+                    # Получаем список всех таблиц
+                    await cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+                    tables = await cur.fetchall()
+
+                    db_structure = {}
+
+                    # Для каждой таблицы получаем информацию о колонках
+                    for table in tables:
+                        table_name = table[0]
+                        await cur.execute(f"PRAGMA table_info({table_name});")
+                        columns = await cur.fetchall()
+                        db_structure[table_name] = columns
+
+                    return db_structure
+            except Exception as e:
+                print(f"Ошибка: {e}")
+                return {}
             
     class Items:
         def __init__(self, db):
@@ -339,7 +427,8 @@ class DataBase:
         async def get_op_channels(self):
             async with self.db.con.cursor() as cur:
                 await cur.execute('SELECT * FROM op_channels')
-                return await cur.fetchall()
+                columns = [column[0] for column in cur.description]
+                return [dict(zip(columns, row)) for row in await cur.fetchall()]
 
         async def add_op_channel(self, channel_id: str):
             async with self.db.con.cursor() as cur:
@@ -354,6 +443,15 @@ class DataBase:
                     DELETE FROM op_channels WHERE channel_id = ?
                 ''', (channel_id,))
                 await self.db.con.commit()
+
+        async def update_channel_url(self, channel_id: int, new_url: str):
+            async with self.db.con.cursor() as cur:
+                await cur.execute(
+                    "UPDATE op_channels SET channel_id = ? WHERE id = ?",
+                    (new_url, channel_id)
+                )
+                await self.db.con.commit()
+
 
     class History:
         def __init__(self, db):
