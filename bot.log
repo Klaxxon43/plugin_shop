@@ -10396,3 +10396,18 @@ UnboundLocalError: cannot access local variable 'query' where it is not associat
 2025-07-18 16:32:22,928 - aiogram.event - INFO - Update id=765722478 is handled. Duration 348 ms by bot id=7674982452
 2025-07-18 16:32:29,923 - aiogram.dispatcher - INFO - Polling stopped
 2025-07-18 16:32:30,126 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 16:32:36,147 - aiogram.dispatcher - INFO - Start polling
+2025-07-18 16:32:36,533 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 16:32:39,356 - aiogram.event - INFO - Update id=765722479 is handled. Duration 535 ms by bot id=7674982452
+2025-07-18 16:39:14,221 - aiogram.dispatcher - INFO - Polling stopped
+2025-07-18 16:39:14,457 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 16:39:19,699 - aiogram.dispatcher - INFO - Start polling
+2025-07-18 16:39:20,072 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 16:39:30,991 - aiogram.event - INFO - Update id=765722480 is handled. Duration 311 ms by bot id=7674982452
+2025-07-18 16:39:38,021 - aiogram.event - INFO - Update id=765722481 is handled. Duration 148 ms by bot id=7674982452
+2025-07-18 16:40:14,250 - aiogram.event - INFO - Update id=765722482 is handled. Duration 336 ms by bot id=7674982452
+2025-07-18 16:40:20,142 - aiogram.event - INFO - Update id=765722483 is handled. Duration 131 ms by bot id=7674982452
+2025-07-18 16:40:26,689 - aiogram.event - INFO - Update id=765722484 is handled. Duration 121 ms by bot id=7674982452
+2025-07-18 16:40:27,393 - aiogram.event - INFO - Update id=765722485 is handled. Duration 99 ms by bot id=7674982452
+2025-07-18 16:42:14,371 - aiogram.dispatcher - INFO - Polling stopped
+2025-07-18 16:42:14,620 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
