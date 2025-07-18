@@ -52,7 +52,9 @@ class DataBase:
                     instruction TEXT,
                     file_path TEXT,
                     photo_path TEXT,
-                    purchases_count INTEGER DEFAULT 0
+                    purchases_count INTEGER DEFAULT 0,
+                    buy_count INTEFER DEFAULT 0,
+                    is_active BOOLEAN DEFAULT TRUE
                 )
             ''')
             
@@ -77,7 +79,9 @@ class DataBase:
             await cur.execute('''
                 CREATE TABLE IF NOT EXISTS op_channels (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    channel_id TEXT UNIQUE
+                    channel_id TEXT UNIQUE,
+                    channel_name TEXT, 
+                    subs_count INTEGER DEFAULT 0
                 )
             ''')
             
@@ -88,16 +92,10 @@ class DataBase:
                     user_id INTEGER,
                     amount REAL,
                     comment TEXT,
+                    type TEXT,
+                    service TEXT,
+                    item_id INTEGER,
                     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (user_id) REFERENCES users(user_id)
-                )
-            ''')
-            
-            # Таблица языков пользователей
-            await cur.execute('''
-                CREATE TABLE IF NOT EXISTS user_languages (
-                    user_id INTEGER PRIMARY KEY,
-                    language TEXT DEFAULT 'ru',
                     FOREIGN KEY (user_id) REFERENCES users(user_id)
                 )
             ''')
@@ -169,14 +167,30 @@ class DataBase:
                 return user['user_id']
 
 
-        async def update_balance(self, user_id: int, amount: float, comment: str):
+        async def update_balance(self, user_id: int, amount: float, comment: str =''):
             async with self.db.con.cursor() as cur:
                 await cur.execute('''
                     UPDATE users SET balance = balance + ? WHERE user_id = ?
                 ''', (amount, user_id))
                 
-                await self.db.history.add_record(user_id, amount, comment)
+                await self.db.history.add_record(
+                                        user_id=user_id,
+                                        amount=amount,
+                                        comment=comment,
+                                        operation_type='выдача баланса',
+                                        service='',
+                                        item_id=''
+                                    )                
                 await self.db.con.commit()
+
+        async def add_ref_income(self, user_id: int, amount: float, referrer_id: int):
+            """Добавить доход от реферала через историю операций"""
+            async with self.db.con.cursor() as cur:
+                # Добавляем запись в историю
+                await cur.execute('''
+                    INSERT INTO history (user_id, amount, comment, type, date)
+                    VALUES (?, ?, ?, ?, datetime('now'))
+                ''', (user_id, amount, f"Реферальный бонус от пользователя {referrer_id}", "ref_bonus"))
 
         async def ban_user(self, user_id: int):
             async with self.db.con.cursor() as cur:
@@ -322,16 +336,19 @@ class DataBase:
                 
                 return item_dict
 
-        async def get_all_items(self, page: int = 1, per_page: int = 5):
+        async def get_all_items(self, page: int = None, per_page: int = None):
             async with self.db.con.cursor() as cur:
-                offset = (page - 1) * per_page
-                await cur.execute('SELECT * FROM items LIMIT ? OFFSET ?', (per_page, offset))
-                
+                if page is not None and per_page is not None:
+                    offset = (page - 1) * per_page
+                    await cur.execute('SELECT * FROM items LIMIT ? OFFSET ?', (per_page, offset))
+                else:
+                    await cur.execute('SELECT * FROM items')
+
                 columns = [column[0] for column in cur.description]
                 items = []
                 for row in await cur.fetchall():
                     items.append(dict(zip(columns, row)))
-                
+
                 return items
 
         async def update_item(self, item_id: int, **kwargs):
@@ -404,6 +421,17 @@ class DataBase:
                     INSERT INTO deposits (unique_id, user_id, amount, date_start, date_end, service, item_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 ''', (unique_id, user_id, amount, date_start, date_end, service, item_id))
+                
+                # Добавляем запись в историю
+                await self.db.history.add_record(
+                    user_id=user_id,
+                    amount=amount,
+                    comment=f"Пополнение через {service}",
+                    operation_type="deposit",
+                    service=service,
+                    item_id=item_id
+                )
+                
                 await self.db.con.commit()
             
             return unique_id
@@ -457,23 +485,64 @@ class DataBase:
         def __init__(self, db):
             self.db = db
 
-        async def add_record(self, user_id: int, amount: float, comment: str):
+        async def add_record(self, user_id: int, amount: float, comment: str, 
+                            operation_type: str = None, service: str = None, item_id: int = None):
             async with self.db.con.cursor() as cur:
                 await cur.execute('''
-                    INSERT INTO history (user_id, amount, comment, date)
-                    VALUES (?, ?, ?, datetime('now'))
-                ''', (user_id, amount, comment))
+                    INSERT INTO history (user_id, amount, comment, type, service, item_id, date)
+                    VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+                ''', (user_id, amount, comment, operation_type, service, item_id))
                 await self.db.con.commit()
 
         async def get_user_history(self, user_id: int, limit: int = 10):
             async with self.db.con.cursor() as cur:
                 await cur.execute('''
-                    SELECT * FROM history 
-                    WHERE user_id = ? 
-                    ORDER BY date DESC 
+                    SELECT h.*, i.name as item_name 
+                    FROM history h
+                    LEFT JOIN items i ON h.item_id = i.id
+                    WHERE h.user_id = ? 
+                    ORDER BY h.date DESC 
                     LIMIT ?
                 ''', (user_id, limit))
-                return await cur.fetchall()
+                
+                columns = [column[0] for column in cur.description]
+                return [dict(zip(columns, row)) for row in await cur.fetchall()]
+
+        async def get_financial_stats(self):
+            async with self.db.con.cursor() as cur:
+                # Статистика по типам операций
+                await cur.execute('''
+                    SELECT 
+                        type,
+                        COUNT(*) as count,
+                        SUM(amount) as total_amount
+                    FROM history
+                    GROUP BY type
+                ''')
+                type_stats = await cur.fetchall()
+                
+                # Общая статистика
+                await cur.execute('''
+                    SELECT 
+                        COUNT(*) as total_operations,
+                        SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END) as total_income,
+                        SUM(CASE WHEN amount < 0 THEN amount ELSE 0 END) as total_outcome
+                    FROM history
+                ''')
+                general_stats = await cur.fetchone()
+                
+                return {
+                    'by_type': type_stats,
+                    'general': general_stats
+                }
+            
+            async def add_record(self, user_id: int, amount: float, comment: str):
+                async with self.db.con.cursor() as cur:
+                    await cur.execute('''
+                        INSERT INTO history (user_id, amount, comment, date)
+                        VALUES (?, ?, ?, datetime('now'))
+                    ''', (user_id, amount, comment))
+                    await self.db.con.commit()
 
         async def get_all_history(self, limit: int = 100):
             async with self.db.con.cursor() as cur:

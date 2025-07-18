@@ -174,10 +174,34 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
             await callback.answer(_("Оплата не найдена"), show_alert=True)
             return
 
-    # Если была частичная оплата с баланса - списываем
+    # Записываем информацию о покупке в историю
+    total_amount = item['price']
+    payment_details = []
+    
+    # Если была частичная оплата с баланса - списываем и записываем
     if balance_used > 0:
-        await db.users.update_balance(user_id, -balance_used, f"Оплата плагина: {item['id']}")
-
+        await db.users.update_balance(
+            user_id, 
+            -balance_used, 
+            f"Частичная оплата товара: {item['name']}",
+            operation_type="purchase",
+            item_id=item_id
+        )
+        payment_details.append(f"С баланса: {balance_used}₽")
+    
+    # Если была оплата через криптобот - записываем
+    if invoice_id != 0:
+        amount_paid = total_amount - balance_used
+        await db.history.add_record(
+            user_id=user_id,
+            amount=-amount_paid,
+            comment=f"Оплата через CryptoBot за товар: {item['name']}",
+            operation_type="purchase",
+            service="cryptobot",
+            item_id=item_id
+        )
+        payment_details.append(f"Через CryptoBot: {amount_paid}₽")
+    
     # Обновляем статус оплаты
     await callback.message.edit_text(_("✅ Оплата прошла успешно! Готовим ваш плагин..."))
 
@@ -185,7 +209,9 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
     message_text = _(
         f"🎉 <b>Спасибо за покупку!</b>\n\n"
         f"<b>Название:</b> <code>{item['name']}</code>\n"
-        f"<b>Описание:</b> <code>{item['description']}</code>\n\n"
+        f"<b>Описание:</b> <code>{item['description']}</code>\n"
+        f"<b>Сумма:</b> <code>{total_amount}₽</code>\n"
+        f"<b>Способ оплаты:</b> {', '.join(payment_details)}\n\n"
     )
 
     if item['instruction']:
@@ -206,13 +232,13 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
             )
             await bot.send_document(
                 chat_id=user_id,
-                document=types.FSInputFile(item['file_path'], filename="plugin"),
+                document=types.FSInputFile(item['file_path'], filename=f"{item['name']}.zip"),
                 caption=_("📦 <b>Ваш плагин</b>")
             )
         else:
             await bot.send_document(
                 chat_id=user_id,
-                document=types.FSInputFile(item['file_path']),
+                document=types.FSInputFile(item['file_path'], filename=f"{item['name']}.zip"),
                 caption=message_text
             )
         
@@ -227,12 +253,24 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
         )
 
     # Начисляем реферальный бонус
-    await process_referral_bonus(
-        buyer_id=user_id,
-        amount=item['price'],
-        description=f"Покупка плагина: {item['name']}",
-        bot=bot
-    )
+    referrer_id = await db.users.get_referrer(user_id)
+    if referrer_id:
+        ref_bonus = round(item['price'] * (float(config['bot']['ref_percent']) / 100, 2))
+        await db.users.update_balance(
+            referrer_id,
+            ref_bonus,
+            f"Реферальный бонус за покупку товара {item['name']}",
+            operation_type="ref_bonus",
+            item_id=item_id
+        )
+        
+        try:
+            await bot.send_message(
+                referrer_id,
+                _("🎉 Вы получили реферальный бонус {bonus}₽ за покупку вашего реферала!").format(bonus=ref_bonus)
+            )
+        except Exception as e:
+            print(f"Не удалось отправить уведомление рефереру: {e}")
 
     # Увеличиваем счетчик покупок
     await db.items.increment_purchases(item_id)
