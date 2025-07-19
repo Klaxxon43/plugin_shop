@@ -324,9 +324,11 @@ async def show_item_edit_menu(callback: types.CallbackQuery, item: dict, is_new_
         kb.button(text=_("⛔️ Деактивировать"), callback_data="toggle_active")
     else:
         kb.button(text=_("✅ Активировать"), callback_data="toggle_active")
+
+    kb.button(text=_("🗑 Удалить товар"), callback_data="delete_item")
     
     kb.button(text=_("🔙 Назад"), callback_data="admin_items")
-    kb.adjust(2, 2, 2, 1, 1)
+    kb.adjust(2, 2, 2, 1, 1, 1)
 
     try:
         if is_new_message:
@@ -674,6 +676,33 @@ async def toggle_active_handler(callback: types.CallbackQuery, state: FSMContext
     
     # Показываем обновленное меню
     await show_item_edit_menu(callback, item)
+
+@admin.callback_query(F.data == "delete_item")
+async def delete_item_handler(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    item_id = data['item_id']
+    item = data['current_item']
+    
+    try:
+        # Удаление файлов
+        if item.get('file_path') and os.path.exists(item['file_path']):
+            os.remove(item['file_path'])
+        if item.get('photo_path') and os.path.exists(item['photo_path']):
+            os.remove(item['photo_path'])
+
+        # Удаление из БД
+        await db.items.delete_item(item_id)
+
+        await state.clear()
+        await callback.message.answer(_("✅ Товар успешно удалён!"))
+
+        # Возврат к списку товаров
+        await admin_items_handler(callback)
+
+    except Exception as e:
+        logger.error(f"Ошибка при удалении товара: {e}")
+        await callback.answer(_("❌ Не удалось удалить товар!"), show_alert=True)
+
 
 @admin.callback_query(F.data == "cancel_edit")
 async def cancel_edit_handler(callback: types.CallbackQuery, state: FSMContext):

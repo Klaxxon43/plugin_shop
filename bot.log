@@ -14435,3 +14435,219 @@ aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: there
 2025-07-18 21:43:46,625 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
 2025-07-18 21:49:41,131 - aiogram.dispatcher - INFO - Start polling
 2025-07-18 21:49:41,504 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 21:51:18,955 - aiogram.event - INFO - Update id=765722784 is handled. Duration 411 ms by bot id=7674982452
+2025-07-18 21:51:20,515 - aiogram.event - INFO - Update id=765722785 is handled. Duration 160 ms by bot id=7674982452
+2025-07-18 21:51:23,667 - aiogram.event - INFO - Update id=765722786 is handled. Duration 209 ms by bot id=7674982452
+2025-07-18 21:51:25,124 - aiogram.event - INFO - Update id=765722787 is handled. Duration 258 ms by bot id=7674982452
+2025-07-18 21:51:28,306 - aiogram.event - INFO - Update id=765722788 is handled. Duration 96 ms by bot id=7674982452
+2025-07-18 21:51:29,355 - aiogram.event - INFO - Update id=765722789 is handled. Duration 151 ms by bot id=7674982452
+2025-07-18 21:51:31,068 - aiogram.event - INFO - Update id=765722790 is handled. Duration 119 ms by bot id=7674982452
+2025-07-18 21:51:33,952 - aiogram.event - INFO - Update id=765722791 is handled. Duration 187 ms by bot id=7674982452
+2025-07-18 21:51:39,540 - aiogram.event - INFO - Update id=765722792 is handled. Duration 108 ms by bot id=7674982452
+2025-07-18 21:51:40,677 - aiogram.event - INFO - Update id=765722793 is handled. Duration 173 ms by bot id=7674982452
+2025-07-18 21:51:41,856 - aiogram.event - INFO - Update id=765722794 is not handled. Duration 30 ms by bot id=7674982452
+2025-07-18 21:52:20,640 - aiogram.event - INFO - Update id=765722795 is handled. Duration 292 ms by bot id=7674982452
+2025-07-18 21:52:21,809 - aiogram.event - INFO - Update id=765722796 is handled. Duration 94 ms by bot id=7674982452
+2025-07-18 21:52:24,917 - aiogram.event - INFO - Update id=765722797 is handled. Duration 153 ms by bot id=7674982452
+2025-07-18 21:52:26,098 - aiogram.event - INFO - Update id=765722798 is handled. Duration 107 ms by bot id=7674982452
+2025-07-18 21:53:34,688 - aiogram.event - INFO - Update id=765722799 is handled. Duration 318 ms by bot id=7674982452
+2025-07-18 21:53:35,929 - aiogram.event - INFO - Update id=765722800 is handled. Duration 165 ms by bot id=7674982452
+2025-07-18 21:53:37,696 - aiogram.event - INFO - Update id=765722801 is handled. Duration 161 ms by bot id=7674982452
+2025-07-18 21:53:39,001 - aiogram.event - INFO - Update id=765722802 is handled. Duration 189 ms by bot id=7674982452
+2025-07-18 22:35:19,989 - aiogram.dispatcher - INFO - Polling stopped
+2025-07-18 22:35:20,212 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 23:18:44,148 - aiogram.dispatcher - INFO - Start polling
+2025-07-18 23:18:44,540 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 23:18:55,073 - aiogram.event - INFO - Update id=765722803 is handled. Duration 568 ms by bot id=7674982452
+2025-07-18 23:18:56,856 - aiogram.event - INFO - Update id=765722804 is handled. Duration 388 ms by bot id=7674982452
+2025-07-18 23:18:57,727 - aiogram.event - INFO - Update id=765722805 is not handled. Duration 114 ms by bot id=7674982452
+2025-07-18 23:18:57,728 - aiogram.event - ERROR - Cause exception while process update id=765722805 by bot id=7674982452
+TelegramBadRequest: Telegram server says - Bad Request: there is no text in the message to edit
+Traceback (most recent call last):
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Программирование\plugin_shop\handlers\client\plugins.py", line 15, in plugins_handler
+    await show_plugins_page(callback, page=1)
+  File "C:\Users\Программирование\plugin_shop\handlers\client\plugins.py", line 60, in show_plugins_page
+    await callback.message.edit_text(
+    ...<2 lines>...
+    )
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\bot.py", line 498, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\session\base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\session\aiohttp.py", line 189, in make_request
+    response = self.check_response(
+        bot=bot, method=method, status_code=resp.status, content=raw_result
+    )
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: there is no text in the message to edit
+2025-07-18 23:20:06,136 - aiogram.event - INFO - Update id=765722806 is not handled. Duration 292 ms by bot id=7674982452
+2025-07-18 23:20:06,137 - aiogram.event - ERROR - Cause exception while process update id=765722806 by bot id=7674982452
+TelegramBadRequest: Telegram server says - Bad Request: there is no text in the message to edit
+Traceback (most recent call last):
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Программирование\plugin_shop\handlers\client\plugins.py", line 15, in plugins_handler
+    await show_plugins_page(callback, page=1)
+  File "C:\Users\Программирование\plugin_shop\handlers\client\plugins.py", line 60, in show_plugins_page
+    await callback.message.edit_text(
+    ...<2 lines>...
+    )
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\bot.py", line 498, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\session\base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\session\aiohttp.py", line 189, in make_request
+    response = self.check_response(
+        bot=bot, method=method, status_code=resp.status, content=raw_result
+    )
+  File "C:\Users\artax\AppData\Local\Programs\Python\Python313\Lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: there is no text in the message to edit
+2025-07-18 23:25:14,816 - aiogram.dispatcher - INFO - Polling stopped
+2025-07-18 23:25:15,016 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 23:25:21,081 - aiogram.dispatcher - INFO - Start polling
+2025-07-18 23:25:21,460 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 23:25:33,656 - aiogram.event - INFO - Update id=765722807 is handled. Duration 589 ms by bot id=7674982452
+2025-07-18 23:25:34,926 - aiogram.event - INFO - Update id=765722808 is handled. Duration 278 ms by bot id=7674982452
+2025-07-18 23:25:36,555 - aiogram.event - INFO - Update id=765722809 is handled. Duration 321 ms by bot id=7674982452
+2025-07-18 23:25:37,780 - aiogram.event - INFO - Update id=765722810 is handled. Duration 259 ms by bot id=7674982452
+2025-07-18 23:25:40,277 - aiogram.event - INFO - Update id=765722811 is handled. Duration 244 ms by bot id=7674982452
+2025-07-18 23:25:43,069 - aiogram.event - INFO - Update id=765722812 is handled. Duration 215 ms by bot id=7674982452
+2025-07-18 23:25:44,471 - aiogram.event - INFO - Update id=765722813 is handled. Duration 245 ms by bot id=7674982452
+2025-07-18 23:25:56,386 - aiogram.dispatcher - INFO - Polling stopped
+2025-07-18 23:25:56,632 - aiogram.dispatcher - INFO - Polling stopped for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 23:38:35,928 - aiogram.dispatcher - INFO - Start polling
+2025-07-18 23:38:36,349 - aiogram.dispatcher - INFO - Run polling for bot @klaxxonPluginShop_bot id=7674982452 - 'PluginShop'
+2025-07-18 23:38:37,078 - aiogram.event - INFO - Update id=765722814 is handled. Duration 521 ms by bot id=7674982452
+2025-07-18 23:38:37,186 - aiogram.event - INFO - Update id=765722815 is handled. Duration 625 ms by bot id=7674982452
+2025-07-18 23:38:39,904 - aiogram.event - INFO - Update id=765722816 is handled. Duration 399 ms by bot id=7674982452
+2025-07-18 23:38:41,458 - aiogram.event - INFO - Update id=765722817 is handled. Duration 300 ms by bot id=7674982452
+2025-07-18 23:38:42,725 - aiogram.event - INFO - Update id=765722818 is handled. Duration 307 ms by bot id=7674982452
+2025-07-18 23:43:07,266 - aiogram.event - INFO - Update id=765722819 is handled. Duration 680 ms by bot id=7674982452

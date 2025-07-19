@@ -3,6 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import FSInputFile
 
 from utils.imports import _
 from utils.imports import *
@@ -160,38 +161,45 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
     item_id = int(parts[2])
     balance_used = float(parts[3])
     user_id = callback.from_user.id
-    
-    # Получаем информацию о товаре
+
     item = await db.items.get_item(item_id)
     if not item:
         await callback.answer(_("Товар не найден!"), show_alert=True)
         return
 
-    # Для комбинированной оплаты проверяем статус оплаты
+    # Проверка статуса оплаты, если участвовал CryptoBot
     if invoice_id != 0:
         status = await check_payment_status(invoice_id)
         if not status:
             await callback.answer(_("Оплата не найдена"), show_alert=True)
             return
 
-    # Записываем информацию о покупке в историю
     total_amount = item['price']
     payment_details = []
-    
-    # Если была частичная оплата с баланса - списываем и записываем
+
+    # Оплата с баланса
     if balance_used > 0:
         await db.users.update_balance(
-            user_id, 
-            -balance_used, 
-            f"Частичная оплата товара: {item['name']}",
+            user_id,
+            -balance_used,
+            f"Частичная оплата товара: {item['name']}"
+        )
+
+        await db.history.add_record(
+            user_id=user_id,
+            amount=-balance_used,
+            comment=f"Оплата за товар: {item['name']}",
             operation_type="purchase",
+            service="balance" if invoice_id == 0 else "balance+CryptoBot",
             item_id=item_id
         )
+
         payment_details.append(f"С баланса: {balance_used}₽")
-    
-    # Если была оплата через криптобот - записываем
+
+    # CryptoBot оплата
     if invoice_id != 0:
         amount_paid = total_amount - balance_used
+
         await db.history.add_record(
             user_id=user_id,
             amount=-amount_paid,
@@ -200,12 +208,12 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
             service="cryptobot",
             item_id=item_id
         )
+
         payment_details.append(f"Через CryptoBot: {amount_paid}₽")
-    
-    # Обновляем статус оплаты
+
+    # Уведомление об успешной оплате
     await callback.message.edit_text(_("✅ Оплата прошла успешно! Готовим ваш плагин..."))
 
-    # Формируем сообщение с плагином
     message_text = _(
         f"🎉 <b>Спасибо за покупку!</b>\n\n"
         f"<b>Название:</b> <code>{item['name']}</code>\n"
@@ -214,7 +222,7 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
         f"<b>Способ оплаты:</b> {', '.join(payment_details)}\n\n"
     )
 
-    if item['instruction']:
+    if item.get('instruction'):
         message_text += _(
             f"📝 <b>Инструкция по установке:</b>\n"
             f"<code>{item['instruction']}</code>\n\n"
@@ -222,26 +230,25 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
 
     message_text += _("⬇️ <b>Ваш плагин готов к скачиванию ниже</b> ⬇️")
 
-    # Отправка контента
     try:
         if item.get('photo_path'):
             await bot.send_photo(
                 chat_id=user_id,
-                photo=types.FSInputFile(item['photo_path']),
+                photo=FSInputFile(item['photo_path']),
                 caption=message_text
             )
             await bot.send_document(
                 chat_id=user_id,
-                document=types.FSInputFile(item['file_path'], filename=f"{item['name']}.zip"),
+                document=FSInputFile(item['file_path'], filename=f"{item['name']}.py"),
                 caption=_("📦 <b>Ваш плагин</b>")
             )
         else:
             await bot.send_document(
                 chat_id=user_id,
-                document=types.FSInputFile(item['file_path'], filename=f"{item['name']}.zip"),
+                document=FSInputFile(item['file_path'], filename=f"{item['name']}.py"),
                 caption=message_text
             )
-        
+
         await callback.message.edit_text(
             _("✅ <b>Плагин успешно выдан!</b>\n"
               "Проверьте свои сообщения, мы отправили вам все материалы.")
@@ -252,18 +259,26 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
             _("⚠️ Произошла ошибка при отправке плагина. Пожалуйста, свяжитесь с поддержкой.")
         )
 
-    # Начисляем реферальный бонус
+    # Реферальный бонус
     referrer_id = await db.users.get_referrer(user_id)
     if referrer_id:
-        ref_bonus = round(item['price'] * (float(config['bot']['ref_percent']) / 100, 2))
+        ref_bonus = round(item['price'] * float(config['bot']['ref_percent']) / 100, 2)
+
         await db.users.update_balance(
             referrer_id,
             ref_bonus,
-            f"Реферальный бонус за покупку товара {item['name']}",
+            f"Реферальный бонус за покупку товара {item['name']}"
+        )
+
+        await db.history.add_record(
+            user_id=referrer_id,
+            amount=ref_bonus,
+            comment=f"Бонус за покупку товара {item['name']} рефералом",
             operation_type="ref_bonus",
+            service="referral",
             item_id=item_id
         )
-        
+
         try:
             await bot.send_message(
                 referrer_id,
@@ -272,8 +287,8 @@ async def confirm_pay_from_cryptobot_handler(callback: types.CallbackQuery, bot:
         except Exception as e:
             print(f"Не удалось отправить уведомление рефереру: {e}")
 
-    # Увеличиваем счетчик покупок
     await db.items.increment_purchases(item_id)
+
 
 
 async def process_referral_bonus(buyer_id: int, amount: float, description: str, bot: Bot = None):

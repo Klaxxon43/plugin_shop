@@ -53,7 +53,7 @@ class DataBase:
                     file_path TEXT,
                     photo_path TEXT,
                     purchases_count INTEGER DEFAULT 0,
-                    buy_count INTEFER DEFAULT 0,
+                    buy_count INTEGER DEFAULT 0,
                     is_active BOOLEAN DEFAULT TRUE
                 )
             ''')
@@ -172,15 +172,7 @@ class DataBase:
                 await cur.execute('''
                     UPDATE users SET balance = balance + ? WHERE user_id = ?
                 ''', (amount, user_id))
-                
-                await self.db.history.add_record(
-                                        user_id=user_id,
-                                        amount=amount,
-                                        comment=comment,
-                                        operation_type='выдача баланса',
-                                        service='',
-                                        item_id=''
-                                    )                
+                          
                 await self.db.con.commit()
 
         async def add_ref_income(self, user_id: int, amount: float, referrer_id: int):
@@ -351,6 +343,7 @@ class DataBase:
 
                 return items
 
+
         async def update_item(self, item_id: int, **kwargs):
             async with self.db.con.cursor() as cur:
                 # Проверяем, есть ли photo_path в kwargs
@@ -373,16 +366,9 @@ class DataBase:
 
         async def delete_item(self, item_id: int):
             async with self.db.con.cursor() as cur:
-                # Сначала получаем информацию о товаре для удаления файлов
-                item = await self.get_item(item_id)
-                if item:
-                    # Здесь можно добавить удаление файлов с диска
-                    # os.remove(item['file_path'])
-                    # if item['photo_path']: os.remove(item['photo_path'])
-                    pass
-                    
-                await cur.execute('DELETE FROM items WHERE id = ?', (item_id,))
+                await cur.execute("DELETE FROM items WHERE id = ?", (item_id,))
                 await self.db.con.commit()
+
 
         async def increment_purchases(self, item_id: int):
             async with self.db.con.cursor() as cur:
@@ -535,14 +521,6 @@ class DataBase:
                     'by_type': type_stats,
                     'general': general_stats
                 }
-            
-            async def add_record(self, user_id: int, amount: float, comment: str):
-                async with self.db.con.cursor() as cur:
-                    await cur.execute('''
-                        INSERT INTO history (user_id, amount, comment, date)
-                        VALUES (?, ?, ?, datetime('now'))
-                    ''', (user_id, amount, comment))
-                    await self.db.con.commit()
 
         async def get_all_history(self, limit: int = 100):
             async with self.db.con.cursor() as cur:
